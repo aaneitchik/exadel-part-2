@@ -7,40 +7,57 @@ body {
 	color: #6a6a6a;
 }
 
-#central {
+#wrapper {
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	margin: -15% 0 0 -15%;
 	width: 30%;
-	height: 30%;
-	min-height: 150px;
+	height: 60%;
+	min-height: 300px;
 	min-width: 150px;
 	z-index: 15;
-	background-color: rgba(255,255,255,0.3);
-	border: 7px solid #9fc8dd;
 	font-size: 16px;
 }
 
-#signin {
+#central, #bottom {
+	border: 7px solid #9fc8dd;
+	background-color: rgba(255,255,255,0.3);
+	float: left;
+	width: 100%;
+	height: 47%;
+}
+
+#central {
+	margin-bottom: 3%;
+}
+
+#bottom {
+	margin-top: 3%;
+}
+
+#signinheader {
 	position: relative;
 	height: 15%;
 	width: 100%;
 	float: left;
 	padding-top: 2%;
-	font-size: 25px;
+	font-size: 22px;
 	text-align: center;
+	overflow: hidden;
 }
 
-#username, #password {
+#useremail, #password {
 	position: relative;
 	float: left;
-	height: 30%;
+	height: 29%;
 	width: 100%;
+	margin-bottom: 1%;
 }
 
 .identification {
 	margin-left: 10%;
+	padding-top: 1%;
 	width: 100%;
 	height: 40%;
 	float: left;
@@ -64,7 +81,7 @@ input[type='text'], input[type='password'] {
 	float: left;
 }
 
-#signup {
+#signbutton {
 	color: #4b4b4b;
 	font-family: crimson-text;
 	font-size: 16px;
@@ -81,7 +98,7 @@ input[type='text'], input[type='password'] {
 	margin-top: 2%;
 }
 
-#signup:hover, #signup:focus {
+#signbutton:hover, #signbutton:focus {
 	background-color: #b0def6;
 	border-color: #b0def6;
 }
