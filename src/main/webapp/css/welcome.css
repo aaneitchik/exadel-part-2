@@ -1,0 +1,88 @@
+@charset "utf-8";
+
+body {
+	background-color: #f4f9fb;
+	background-image: url("../images/font.png");
+	background-repeat: repeat-x;
+	color: #6a6a6a;
+}
+
+#central {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -15% 0 0 -15%;
+	width: 30%;
+	height: 30%;
+	min-height: 150px;
+	min-width: 150px;
+	z-index: 15;
+	background-color: rgba(255,255,255,0.3);
+	border: 7px solid #9fc8dd;
+	font-size: 16px;
+}
+
+#signin {
+	position: relative;
+	height: 15%;
+	width: 100%;
+	float: left;
+	padding-top: 2%;
+	font-size: 25px;
+	text-align: center;
+}
+
+#username, #password {
+	position: relative;
+	float: left;
+	height: 30%;
+	width: 100%;
+}
+
+.identification {
+	margin-left: 10%;
+	width: 100%;
+	height: 40%;
+	float: left;
+}
+
+input[type='text'], input[type='password'] {
+	margin-top: 1%;
+	margin-left: 10%;
+	margin-right: 10%;
+	width: 80%;
+	height: 39%;
+	float: left;
+	font-size: 16px;
+	color: #757575;
+	padding-left: 5px;
+}
+
+#register {
+	height: 18%;
+	width: 100%;
+	float: left;
+}
+
+#signup {
+	color: #4b4b4b;
+	font-family: crimson-text;
+	font-size: 16px;
+	background-color: #a7d3e9;
+	border: thin solid #a7d3e9;
+	float: right;
+	outline-style: none;
+	text-align: center;
+	padding-top: 2px;
+	border-radius: 7px;
+	cursor: pointer;
+	vertical-align: top;
+	margin-right: 8%;
+	margin-top: 2%;
+}
+
+#signup:hover, #signup:focus {
+	background-color: #b0def6;
+	border-color: #b0def6;
+}
+
