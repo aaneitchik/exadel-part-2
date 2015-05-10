@@ -7,17 +7,19 @@ var uniqueId = function() {
 	return Math.floor(date * random).toString();
 };
 
-var theMessage = function(name, text) {
+var theMessage = function(name, text, sentby) {
 	return {
 		userName: name,
 		message: text,
 		id: uniqueId(),
-		state: 'standard'
+		state: 'standard',
+		sender: sentby
 	};
 };
 
 var appState = {
 	mainUrl : 'chat',
+	userEmail: localStorage.getItem('email'),
 	userName : 'anonymous',
 	messageList : [],
 	token : 'TE11EN',
@@ -108,12 +110,23 @@ function createMessage(msg) {
 	var message = document.createElement('div');
 	var name = msg.userName;
 	var text = msg.message;
+	var sender = msg.sender;
 	message.className = 'message';
 	message.id = msg.id;
 	text = text.replace(/</g, '&lt;');
 	text = text.replace(/>/g, '&gt;');
 	text = text.replace(/\n/g, '<br />');
-	message.innerHTML = '<table><tr><td style="width: auto; min-width: 60px "><b>' + name + ':</b></td><td style="width: 75%; word-wrap: break-word" onBlur="makeUneditable()">' + text + '</td><td width=5% style="padding-left: 5px"><img src="images/icon_edit.png" class="editicon"></img><img src="images/icon_delete.png" class="deleteicon"</img></td></tr></table>';
+	var innerText = '<table><tr><td style="width: auto; min-width: 60px "><b>' + name + ':</b></td>';
+	if(sender === appState.userEmail)
+		innerText += '<td style="width: 75%;';
+	else
+		innerText += '<td style="width: 80%;';
+	innerText += 'word-wrap: break-word" onBlur="makeUneditable()">' + text + '</td>';
+	if(sender === appState.userEmail) {
+		innerText += '<td width=5% style="padding-left: 5px"><img src="images/icon_edit.png" class="editicon"></img><img src="images/icon_delete.png" class="deleteicon"</img></td>';
+	}
+	innerText += '</tr></table>';
+	message.innerHTML = innerText;
 	return message;
 }
 
@@ -121,7 +134,7 @@ function sendMessage() {
 	var message = document.getElementById('message');
 	var msg = message.value;
 	if(msg !='') {
-		var mes = theMessage(appState.userName, msg);
+		var mes = theMessage(appState.userName, msg, appState.userEmail);
 		message.value = '';
 		addMessage(mes);
 	}

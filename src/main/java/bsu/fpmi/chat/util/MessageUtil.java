@@ -14,6 +14,7 @@ public final class MessageUtil {
 	private static final String MESSAGE = "message";
 	private static final String USERNAME = "userName";
 	private static final String STATE = "state";
+	private static final String SENDER = "sender";
 
 	private MessageUtil() {
 	}
@@ -37,9 +38,10 @@ public final class MessageUtil {
 		Object message = json.get(MESSAGE);
 		Object userName = json.get(USERNAME);
 		Object state = json.get(STATE);
+		Object sender = json.get(SENDER);
 
-		if (id != null && message != null && userName != null && state != null) {
-			return new Message((String) id, (String) userName, (String) message, (String) state);
+		if (id != null && message != null && userName != null && state != null && sender != null) {
+			return new Message((String) id, (String) userName, (String) message, (String) state, (String) sender);
 		}
 		return null;
 	}

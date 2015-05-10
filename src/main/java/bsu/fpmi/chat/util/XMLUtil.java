@@ -72,6 +72,7 @@ public class XMLUtil {
 
             Element msgElement = doc.createElement("message");
             msgElement.setAttribute("id", message.getId());
+            msgElement.setAttribute("sender", message.getSender());
             Node root = doc.getFirstChild();
             root.appendChild(msgElement);
 
@@ -143,7 +144,7 @@ public class XMLUtil {
         }
     }
 
-    public static void editMessageInXML(String id, String text, String filepath) {
+    public synchronized void editMessageInXML(String id, String text, String filepath) {
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -179,8 +180,116 @@ public class XMLUtil {
         }
     }
 
+    public synchronized void startWritingUsersToXML(String filepath) {
+        try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.newDocument();
+
+            Element rootElement = doc.createElement("users");
+            doc.appendChild(rootElement);
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(new File(filepath));
+            transformer.transform(source, result);
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException pce) {
+            pce.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized boolean validateUser(String email, String password, String filepath) {
+        try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(filepath);
+
+            //checking, if this user already exists
+            NodeList users = doc.getElementsByTagName("user");
+            for(int i = 0; i < users.getLength(); i++) {
+                Node user = users.item(i);
+                if(user.getNodeType() == Node.ELEMENT_NODE) {
+                    if(user.getChildNodes().item(0).getTextContent().equals(email) && user.getChildNodes().item(1).getTextContent().equals(password)) {
+                        return true;
+                    }
+                }
+            }
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(new File(filepath));
+            transformer.transform(source, result);
+
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public synchronized boolean addUserToXML(String email, String password, String filepath) {
+        try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(filepath);
+
+            //checking, if this user already exists
+            NodeList users = doc.getElementsByTagName("user");
+            for(int i = 0; i < users.getLength(); i++) {
+                Node user = users.item(i);
+                if(user.getNodeType() == Node.ELEMENT_NODE) {
+                    if(user.getChildNodes().item(0).getTextContent().equals(email)) {
+                        return false;
+                    }
+                }
+            }
+
+            Element userElement = doc.createElement("user");
+            Node root = doc.getFirstChild();
+            root.appendChild(userElement);
+
+            Element emailElement = doc.createElement("email");
+            emailElement.appendChild(doc.createTextNode(email));
+            userElement.appendChild(emailElement);
+
+            Element passwordElement = doc.createElement("password");
+            passwordElement.appendChild(doc.createTextNode(password));
+            userElement.appendChild(passwordElement);
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(new File(filepath));
+            transformer.transform(source, result);
+
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public static void historyParser(Logger logger, String filepath) {
-        List<Message> messageList = new ArrayList<Message>();
         try {
             File xmlFile = new File(filepath);
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -203,12 +312,13 @@ public class XMLUtil {
                 if (message.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) message;
 
-                    String mDate = ((Element) message).getElementsByTagName("date").item(0).getTextContent();
-                    String mText = ((Element) message).getElementsByTagName("text").item(0).getTextContent();
-                    String mAuthor = ((Element) message).getElementsByTagName("author").item(0).getTextContent();
-                    String mId = ((Element) message).getAttribute("id");
+                    String mDate = element.getElementsByTagName("date").item(0).getTextContent();
+                    String mText = element.getElementsByTagName("text").item(0).getTextContent();
+                    String mAuthor = element.getElementsByTagName("author").item(0).getTextContent();
+                    String mId = element.getAttribute("id");
+                    String mSender = element.getAttribute("sender");
 
-                    MessageStorage.addMessage(new Message(mId, mAuthor, mText, "standard"));
+                    MessageStorage.addMessage(new Message(mId, mAuthor, mText, "standard", mSender));
 
                     logger.info(mDate + " " + mAuthor + " : " + mText);
                 }
@@ -222,4 +332,6 @@ public class XMLUtil {
             e.printStackTrace();
         }
     }
+
+
 }

@@ -28,6 +28,7 @@ public final class MessageStorage {
 			jsonObject.put("userName", m.getUserName());
 			jsonObject.put("message", m.getMessage());
 			jsonObject.put("state", m.getState());
+			jsonObject.put("sender", m.getSender());
 			messageList.add(jsonObject);
 		}
 		return messageList;

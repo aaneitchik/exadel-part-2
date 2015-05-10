@@ -2,31 +2,41 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Chat Homepage</title>
-<link rel="stylesheet" href="css/style.css"/>
-<script src="js/mainscript.js" type="text/javascript"></script>
+<title>Welcome to Chat!</title>
+<link href="css/welcome.css" rel="stylesheet" type="text/css">
+<script src="js/welcome.js" type="text/javascript"></script>
 </head>
 
 <body onLoad="run();">
-<div class="centered" id="wrapper">
-  <header id="top">
-    <input type="button" id="connection" value="">
-  </header>
-  <div id="central">
-    <div class="scroll" id="messages"></div>
-  	<div id="authorize">
-    	<div id="authorizebox">
-    	<header id="whoswriting">who's writing?</header>
-    	<input type="text" id="username" placeholder="Enter name, then press Enter" maxlength="15">
+<div id="wrapper">
+    <div id="central">
+    	<header id="signinheader"></header>
+    	<div id="useremail">
+        	<header class="identification">Email: </header>
+        	<input type="text" id="enteremail" name="email">
     	</div>
+    	<div id="password">
+        	<header class="identification">Password: </header>
+        	<input type="password" id="enterpassword" name="password">
+    	</div>
+        <div id="register">
+        	<input type="submit" id="signinbutton" value="Sign in">
+        </div>
     </div>
-  </div>
-  <div id="bottom">
-    <div id="entermessage">
-    	<textarea id ="message" class="scroll" placeholder="Enter message" autofocus></textarea>
-    	<input type="submit" id="submitbutton" value ="Send">
+    <div id="bottom">
+    	<header id="signinheader">Oh, you're new? Sign up!</header>
+    	<div id="useremail">
+        	<header class="identification">Email: </header>
+        	<input type="text" id="registeremail">
+        </div>
+        <div id="password">
+        	<header class="identification">Password: </header>
+        	<input type="password" id="registerpassword">
+        </div>
+        <div id="registerbottom">
+        	<input type="button" id="signupbutton" value="Sign up">
+        </div>
     </div>
-  </div>
 </div>
 </body>
 </html>

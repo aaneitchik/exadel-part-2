@@ -81,7 +81,7 @@ input[type='text'], input[type='password'] {
 	float: left;
 }
 
-#signbutton {
+#signinbutton, #signupbutton {
 	color: #4b4b4b;
 	font-family: crimson-text;
 	font-size: 16px;
@@ -98,7 +98,7 @@ input[type='text'], input[type='password'] {
 	margin-top: 2%;
 }
 
-#signbutton:hover, #signbutton:focus {
+#signinbutton:hover, #signinbutton:focus, #signupbutton:hover, #signupbutton:focus {
 	background-color: #b0def6;
 	border-color: #b0def6;
 }
