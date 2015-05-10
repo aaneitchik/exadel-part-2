@@ -36,11 +36,14 @@ function run() {
 
 	firstRestore();
 
-	setInterval(function() {
-		if(appState.setPause == 0) {
-			restore();
-		}
-	}, 500);
+	process();
+}
+
+function process() {
+	if(appState.setPause == 0) {
+		restore();
+	}
+	setTimeout("process()",500);
 }
 
 function delegateEvent(evtObj) {
