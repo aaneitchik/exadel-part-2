@@ -10,8 +10,7 @@ body {
 #wrapper {
 	position: absolute;
 	top: 50%;
-	left: 50%;
-	margin: -15% 0 0 -15%;
+	left: 50%;	margin: -15% 0 0 -15%;
 	width: 30%;
 	height: 60%;
 	min-height: 300px;
@@ -79,6 +78,7 @@ input[type='text'], input[type='password'] {
 	height: 18%;
 	width: 100%;
 	float: left;
+	overflow: hidden;
 }
 
 #signinbutton, #signupbutton {
@@ -103,3 +103,14 @@ input[type='text'], input[type='password'] {
 	border-color: #b0def6;
 }
 
+.error {
+	float: left;
+	width: 50%;
+	margin-left: 10%;
+	margin-top: 2%;
+	font-size: 14px;
+	overflow: hidden;
+	color: orangered;
+	display: inline-block;
+	vertical-align: middle;
+}

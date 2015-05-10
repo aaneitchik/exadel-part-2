@@ -27,8 +27,10 @@ var appState = {
 };
 
 function run() {
-	var appContainer = document.getElementById('wrapper');
+	if(appState.userEmail == null )
+		window.location.href = "secret.html";
 
+	var appContainer = document.getElementById('wrapper');
 	appContainer.addEventListener('click', delegateEvent);
 	appContainer.addEventListener('keydown', delegateEvent);
 

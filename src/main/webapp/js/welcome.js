@@ -1,4 +1,5 @@
 var mainUrl = 'index';
+var registerUp, registerBottom, errorUp, errorBottom;
 
 var userProfile = function(mail, pass, action) {
 	return {
@@ -10,6 +11,10 @@ var userProfile = function(mail, pass, action) {
 
 function run() {
 	var appContainer = document.getElementById('wrapper');
+	registerUp = document.getElementById('register');
+	registerBottom = document.getElementById('registerbottom');
+	errorUp = registerUp.innerHTML;
+	errorBottom = registerBottom.innerHTML;
 
 	appContainer.addEventListener('click', delegateEvent);
 	appContainer.addEventListener('keydown', delegateEvent);
@@ -28,8 +33,10 @@ function signIn() {
 	var email = document.getElementById('enteremail').value;
 	var password = document.getElementById('enterpassword').value;
 	var user = userProfile(email, password, 'signin');
-	if(email === '' || password === '')
-		window.alert("You must enter ameil and password!");
+	if(email === '' || password === '') {
+		var error = '<p class="error">You must enter email and password!</p>' + errorUp;
+		registerUp.innerHTML = error;
+	}
 	else {
 		post(mainUrl, JSON.stringify(user), function (responseText) {
 			console.assert(responseText != null);
@@ -45,8 +52,10 @@ function signIn() {
 function signUp() {
 	var email = document.getElementById('registeremail').value;
 	var password = document.getElementById('registerpassword').value;
-	if(email === '' || password === '')
-		window.alert("You must enter ameil and password!");
+	if(email === '' || password === '') {
+		var error = '<p class="error">You must enter email and password!</p>' + errorBottom;
+		registerBottom.innerHTML = error;
+	}
 	else {
 		var user = userProfile(email, password, 'signup');
 
@@ -68,13 +77,18 @@ function handleSigning(answer, email, type) {
 			return;
 		}
 		localStorage.setItem("email", email);
+		registerUp.innerHTML = errorUp;
 		window.location.href = "chat.html";
 	}
 	else if(answer === 'ERROR'){
-		if(type === 'signin')
-			window.alert("Wrong email or password");
-		if(type === 'signup')
-			window.alert("This user already exists");
+		if(type === 'signin') {
+			var error = '<p class="error">Wrong email or password!</p>' + errorUp;
+			registerUp.innerHTML = error;
+		}
+		if(type === 'signup') {
+			var error = '<p class="error">Sorry, this user already exists</p>' + errorBottom;
+			registerBottom.innerHTML = error;
+		}
 	}
 }
 
