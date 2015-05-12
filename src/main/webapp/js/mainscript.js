@@ -1,5 +1,7 @@
 'use strict';
 
+var messagesWaiting = false;
+
 var uniqueId = function() {
 	var date = Date.now();
 	var random = Math.random() * Math.random();
@@ -43,7 +45,7 @@ function process() {
 	if(appState.setPause == 0) {
 		restore();
 	}
-	setTimeout("process()",500);
+	setTimeout("process",500);
 }
 
 function delegateEvent(evtObj) {
@@ -368,6 +370,13 @@ function isError(text) {
 
 function ajax(method, url, data, continueWith, continueWithError) {
 	var xhr = new XMLHttpRequest();
+	xhr.timeout = 15000;
+
+	xhr.onreadystatechange=function(){
+		if (xhr.readyState==4 && xhr.status==200) {
+			messagesWaiting = false;
+		}
+	}
 
 	continueWithError = continueWithError || defaultErrorHandler;
 	xhr.open(method || 'GET', url, true);

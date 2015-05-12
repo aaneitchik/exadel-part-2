@@ -20,7 +20,7 @@ public final class MessageStorage {
 		return INSTANCE.size();
 	}
 
-	public static List<JSONObject> getSubMessagesByIndex(int index) {
+	public static List<JSONObject> getMessages() {
 		List<JSONObject> messageList = new ArrayList<JSONObject>();
 		for(Message m : INSTANCE) {
 			JSONObject jsonObject = new JSONObject();

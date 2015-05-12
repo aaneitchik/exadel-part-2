@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 
 import static bsu.fpmi.chat.util.MessageUtil.*;
 
-@WebServlet("/index")
+@WebServlet(urlPatterns = {"/index"}, asyncSupported = true)
 public final class WelcomeServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;

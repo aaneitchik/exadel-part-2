@@ -58,15 +58,14 @@ function signUp() {
 	}
 	else {
 		var user = userProfile(email, password, 'signup');
+		var response;
 
 		post(mainUrl, JSON.stringify(user), function (responseText) {
 			console.assert(responseText != null);
-
-			var response = JSON.parse(responseText);
-			handleSigning(response.answer, email, 'signup');
-
+			response = JSON.parse(responseText);
 			continueWith && continueWith();
 		});
+		handleSigning(response.answer, email, 'signup');
 	}
 }
 
