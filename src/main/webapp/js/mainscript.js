@@ -1,6 +1,6 @@
 'use strict';
 
-var messagesWaiting = false;
+var messagesWaiting = false; //this variable is set in XMLHttpRequest .onreadysetchange to inform of 'get' success
 
 var uniqueId = function() {
 	var date = Date.now();
@@ -24,12 +24,13 @@ var appState = {
 	userEmail: localStorage.getItem('email'),
 	userName : 'anonymous',
 	messageList : [],
-	token : 'TE11EN',
+	firstToken: 'TE11EN',
+	token : 'TE19EN',
 	setPause : 0
 };
 
 function run() {
-	if(appState.userEmail == null )
+	if (appState.userEmail == null)
 		window.location.href = "secret.html";
 
 	var appContainer = document.getElementById('wrapper');
@@ -42,10 +43,10 @@ function run() {
 }
 
 function process() {
-	if(appState.setPause == 0) {
+	if(appState.setPause == 0 && messagesWaiting == false) {
 		restore();
 	}
-	setTimeout("process",500);
+	setTimeout(process,2000);
 }
 
 function delegateEvent(evtObj) {
@@ -274,6 +275,7 @@ function makeUneditable() {
 /////Restoring messages/////
 
 function restore(continueWith) {
+	messagesWaiting = true;
 	var url = appState.mainUrl + '?token=' + appState.token;
 
 	get(url, function(responseText) {
@@ -283,13 +285,14 @@ function restore(continueWith) {
 
 		addMessagesToList(response.messages);
 		createAllMessages(appState.messageList);
+		appState.token = response.token;
 
 		continueWith && continueWith();
 	});
 }
 
 function firstRestore(continueWith) {
-	var url = appState.mainUrl + '?token=' + appState.token;
+	var url = appState.mainUrl + '?token=' + appState.firstToken;
 
 	get(url, function(responseText) {
 		console.assert(responseText != null);
@@ -370,9 +373,8 @@ function isError(text) {
 
 function ajax(method, url, data, continueWith, continueWithError) {
 	var xhr = new XMLHttpRequest();
-	xhr.timeout = 15000;
 
-	xhr.onreadystatechange=function(){
+	xhr.onreadystatechange = function(){
 		if (xhr.readyState==4 && xhr.status==200) {
 			messagesWaiting = false;
 		}
