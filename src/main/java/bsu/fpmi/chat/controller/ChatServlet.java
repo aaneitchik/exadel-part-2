@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
@@ -29,7 +30,7 @@ import static bsu.fpmi.chat.util.MessageUtil.*;
 @WebServlet(urlPatterns = {"/chat"}, asyncSupported = true)
 public final class ChatServlet extends HttpServlet {
 	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy HH:mm ");
-	private final static List<AsyncContext> contexts = new ArrayList<AsyncContext>();
+	private final static Queue<AsyncContext> contexts = new ConcurrentLinkedQueue<>();
 
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getLogger(ChatServlet.class.getName());
@@ -84,6 +85,7 @@ public final class ChatServlet extends HttpServlet {
 				);
 				contexts.add(context);
 			} else {
+				response.setStatus(200);
 				sendMessages(response);
 			}
 		} else {
@@ -104,7 +106,7 @@ public final class ChatServlet extends HttpServlet {
 			Date currentDate = new Date();
 			logger.info(dateFormat.format(currentDate) + message.getUserName() + " : " + message.getMessage());
 			XMLUtil.getInstance().addMessageToXML(message, currentDate, filepath);
-			response.setStatus(HttpServletResponse.SC_OK);
+			response.setStatus(200);
 			completeAsyncContexts(contexts);
 		} catch (ParseException e) {
 			logger.error("Invalid user message " + e.getMessage());
@@ -160,7 +162,7 @@ public final class ChatServlet extends HttpServlet {
 		return jsonObject.toJSONString();
 	}
 
-	private void completeAsyncContexts(List<AsyncContext> contexts) throws IOException {
+	private void completeAsyncContexts(Queue<AsyncContext> contexts) throws IOException {
 		for (AsyncContext context : contexts) {
 			sendMessages(context.getResponse());
 			logger.info("Async completed without timing out");

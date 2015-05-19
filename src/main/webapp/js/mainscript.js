@@ -292,6 +292,7 @@ function restore(continueWith) {
 }
 
 function firstRestore(continueWith) {
+	messagesWaiting = true;
 	var url = appState.mainUrl + '?token=' + appState.firstToken;
 
 	get(url, function(responseText) {
@@ -384,6 +385,7 @@ function ajax(method, url, data, continueWith, continueWithError) {
 	xhr.open(method || 'GET', url, true);
 
 	xhr.onload = function () {
+
 		if (xhr.readyState !== 4)
 			return;
 
