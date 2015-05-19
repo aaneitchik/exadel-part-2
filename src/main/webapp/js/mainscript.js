@@ -355,10 +355,6 @@ function del(url, data, continueWith, continueWithError) {
 	ajax('DELETE', url, null, continueWith, continueWithError);	
 }
 
-function trace(url, continueWith, continueWithError) {
-	ajax('OPTIONS', url, null, continueWith, continueWithError);	
-}
-
 function isError(text) {
 	if(text == "")
 		return false;
