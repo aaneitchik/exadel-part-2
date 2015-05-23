@@ -34,6 +34,10 @@ public class Message {
     public String getId() {
     	return id;
     }
+
+    public int getIntId() {
+        return Integer.parseInt(this.id);
+    }
     
     public String getUserName() {
     	return userName;
@@ -61,9 +65,5 @@ public class Message {
         
     public void setMessage(String message) {
     	this.message = message;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
     }
 }

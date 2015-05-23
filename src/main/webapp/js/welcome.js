@@ -34,8 +34,7 @@ function signIn() {
 	var password = document.getElementById('enterpassword').value;
 	var user = userProfile(email, password, 'signin');
 	if(email === '' || password === '') {
-		var error = '<p class="error">You must enter email and password!</p>' + errorUp;
-		registerUp.innerHTML = error;
+		registerUp.innerHTML = '<p class="error">You must enter email and password!</p>' + errorUp;
 	}
 	else {
 		post(mainUrl, JSON.stringify(user), function (responseText) {
@@ -52,20 +51,18 @@ function signIn() {
 function signUp() {
 	var email = document.getElementById('registeremail').value;
 	var password = document.getElementById('registerpassword').value;
+	var user = userProfile(email, password, 'signup');
 	if(email === '' || password === '') {
-		var error = '<p class="error">You must enter email and password!</p>' + errorBottom;
-		registerBottom.innerHTML = error;
+		registerBottom.innerHTML = '<p class="error">You must enter email and password!</p>' + errorBottom;
 	}
 	else {
-		var user = userProfile(email, password, 'signup');
-		var response;
-
 		post(mainUrl, JSON.stringify(user), function (responseText) {
 			console.assert(responseText != null);
-			response = JSON.parse(responseText);
+			var response = JSON.parse(responseText);
+
+			handleSigning(response.answer, email, 'signup');
 			continueWith && continueWith();
 		});
-		handleSigning(response.answer, email, 'signup');
 	}
 }
 
@@ -81,12 +78,10 @@ function handleSigning(answer, email, type) {
 	}
 	else if(answer === 'ERROR'){
 		if(type === 'signin') {
-			var error = '<p class="error">Wrong email or password!</p>' + errorUp;
-			registerUp.innerHTML = error;
+			registerUp.innerHTML = '<p class="error">Wrong email or password!</p>' + errorUp;
 		}
 		if(type === 'signup') {
-			var error = '<p class="error">Sorry, this user already exists</p>' + errorBottom;
-			registerBottom.innerHTML = error;
+			registerBottom.innerHTML = '<p class="error">Sorry, this user already exists</p>' + errorBottom;
 		}
 	}
 }
@@ -138,9 +133,9 @@ function ajax(method, url, data, continueWith, continueWithError) {
 
     xhr.ontimeout = function () {
     	continueWithError('Server timed out !');
-    }
+    };
 
-    xhr.onerror = function (e) {
+    xhr.onerror = function () {
     	var errMsg = 'Server connection error !\n'+
     	'\n' +
     	'Check if \n'+

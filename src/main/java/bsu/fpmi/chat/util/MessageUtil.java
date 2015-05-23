@@ -5,6 +5,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class MessageUtil {
 	public static final String TOKEN = "token";
 	public static final String MESSAGES = "messages";
@@ -44,5 +47,19 @@ public final class MessageUtil {
 			return new Message((String) id, (String) userName, (String) message, (String) state, (String) sender);
 		}
 		return null;
+	}
+
+	public static List<JSONObject> getMessages(List<Message> messageList) {
+		List<JSONObject> jsonList = new ArrayList<>();
+		for(Message m : messageList) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("id", m.getId());
+			jsonObject.put("userName", m.getUserName());
+			jsonObject.put("message", m.getMessage());
+			jsonObject.put("state", m.getState());
+			jsonObject.put("sender", m.getSender());
+			jsonList.add(jsonObject);
+		}
+		return jsonList;
 	}
 }

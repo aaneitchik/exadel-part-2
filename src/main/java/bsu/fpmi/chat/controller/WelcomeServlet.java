@@ -1,6 +1,5 @@
 package bsu.fpmi.chat.controller;
 
-import bsu.fpmi.chat.model.MessageStorage;
 import bsu.fpmi.chat.util.ServletUtil;
 import bsu.fpmi.chat.util.XMLUtil;
 import org.apache.log4j.Logger;

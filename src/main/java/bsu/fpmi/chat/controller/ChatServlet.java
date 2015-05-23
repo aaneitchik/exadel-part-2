@@ -1,6 +1,5 @@
 package bsu.fpmi.chat.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
@@ -13,12 +12,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import bsu.fpmi.chat.dao.MessageDAO;
+import bsu.fpmi.chat.dao.MessageDAOImplement;
 import bsu.fpmi.chat.util.MessageUtil;
-import bsu.fpmi.chat.util.XMLUtil;
 import org.apache.log4j.Logger;
 
 import bsu.fpmi.chat.model.Message;
-import bsu.fpmi.chat.model.MessageStorage;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -34,15 +33,11 @@ public final class ChatServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getLogger(ChatServlet.class.getName());
-	private static String filepath = "history.xml";
+	private MessageDAO messageDAO;
 
 	@Override
 	public void init() {
-		File file = new File(filepath);
-		if(!file.exists() || file.isDirectory()) {
-			XMLUtil.getInstance().startWritingToXML(filepath);
-		}
-		XMLUtil.historyParser(logger, filepath);
+		this.messageDAO = new MessageDAOImplement();
 	}
 
 	@Override
@@ -85,7 +80,7 @@ public final class ChatServlet extends HttpServlet {
 				);
 				contexts.add(context);
 			} else {
-				response.setStatus(200);
+				response.setStatus(HttpServletResponse.SC_OK);
 				sendMessages(response);
 			}
 		} else {
@@ -95,18 +90,18 @@ public final class ChatServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setCharacterEncoding("UTF-8");
 		String data = ServletUtil.getMessageBody(request);
 		try {
 			JSONObject json = stringToJson(data);
 			Message message = jsonToMessage(json);
 
-			message.setId(MessageStorage.getSize() + 1);
-			MessageStorage.addMessage(message);
+			message.setId(messageDAO.selectAll().size() + 1);
 
 			Date currentDate = new Date();
 			logger.info(dateFormat.format(currentDate) + message.getUserName() + " : " + message.getMessage());
-			XMLUtil.getInstance().addMessageToXML(message, currentDate, filepath);
-			response.setStatus(200);
+			messageDAO.add(message);
+			response.setStatus(HttpServletResponse.SC_OK);
 			completeAsyncContexts(contexts);
 		} catch (ParseException e) {
 			logger.error("Invalid user message " + e.getMessage());
@@ -116,16 +111,16 @@ public final class ChatServlet extends HttpServlet {
 
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setCharacterEncoding("UTF-8");
 		String id = request.getParameter(ID);
 		String data = ServletUtil.getMessageBody(request);
 		logger.info("PUT request: id = " + id + " received");
 		if (id != null && !"".equals(id)) {
 			try {
 				Message message = new Message(MessageUtil.stringToJson(data));
-				MessageStorage.getMessageById(id).setMessage(message.getMessage());
-				MessageStorage.getMessageById(id).setState("modified");
+				message.setState("modified");
+				messageDAO.update(message);
 				logger.info("Message was successfully edited");
-				XMLUtil.getInstance().editMessageInXML(id, message.getMessage(), filepath);
 				completeAsyncContexts(contexts);
 			} catch (ParseException e) {
 				e.printStackTrace();
@@ -137,13 +132,12 @@ public final class ChatServlet extends HttpServlet {
 
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
+		response.setCharacterEncoding("UTF-8");
 		String id = request.getParameter(ID);
 		logger.info("DELETE request: id = " + id + " received");
 		if (id != null && !"".equals(id)) {
-			MessageStorage.getMessageById(id).setMessage("");
-			MessageStorage.getMessageById(id).setState("modified");
+			messageDAO.update(new Message(id, "", "", "modified", "anonymous"));
 			logger.info("Message was successfully deleted");
-			XMLUtil.getInstance().deleteMessageFromXML(id, filepath);
 			try {
 				completeAsyncContexts(contexts);
 			} catch (IOException e) {
@@ -156,9 +150,10 @@ public final class ChatServlet extends HttpServlet {
 
 	@SuppressWarnings("unchecked")
 	private String formResponse() {
+		List<JSONObject> messageList = MessageUtil.getMessages(messageDAO.selectAll());
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put(MESSAGES, MessageStorage.getMessages());
-		jsonObject.put(TOKEN, getToken(MessageStorage.getSize()));
+		jsonObject.put(MESSAGES, messageList);
+		jsonObject.put(TOKEN, getToken(messageList.size()));
 		return jsonObject.toJSONString();
 	}
 
